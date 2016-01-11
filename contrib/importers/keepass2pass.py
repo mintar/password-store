@@ -39,13 +39,38 @@ def get_value(elements, node_text):
 def path_for(element, path=''):
     """ Generate path name from elements title and current path """
     if element.tag == 'Entry':
-        title = get_value(element.findall("String"), "Title")
+        title = get_value(element.findall("String"), "URL")
+        if title is None:
+            title = get_value(element.findall("String"), "Title")
+            if title is None:
+                print "[ERR ] No title or URL!"
+            else:
+                print "[WARN] No URL: %s" % title
+        else:
+            title = shorten_url(title)
+            user_name = get_value(element.findall("String"), "UserName")
+            if user_name is None or user_name.strip() == '':
+                print "[WARN] No UserName: %s" % title
+            else:
+                title = title + '#' + user_name
+
     elif element.tag == 'Group':
         title = element.find('Name').text
-    else: title = ''
+    else:
+        title = ''
     
     if path == '': return title
     else: return '/'.join([path, title])
+
+def shorten_url(long_url):
+    url = long_url.replace('http://', '')
+    url = url.replace('https://', '')
+    url = url.replace('www.', '')
+    i = url.find('/')
+    if (i != -1):
+        url = url[:i]
+
+    return url
 
 def password_data(element, path=''):
     """ Return password data and additional info if available from password entry element. """
