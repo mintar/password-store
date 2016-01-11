@@ -83,6 +83,10 @@ def password_data(element, path=''):
     for field in ['UserName', 'URL', 'Notes']:
         value = get_value(element, field)
         if value is not None and not len(value) == 0:
+            if field == 'Notes':
+                value = value.strip()
+                if value == 'Imported from FireFox by the Web Site Advantage FireFox to KeePass Importer':
+                    continue
             data = "%s%s: %s\n" % (data, field, value)
     return data
 
