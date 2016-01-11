@@ -64,9 +64,13 @@ def password_data(element, path=''):
 def import_entry(entries, element, path=''):
     element_path = path_for(element, path) 
     if entries.has_key(element_path):
-        print "[INFO] Duplicate needs merging: %s" % element_path
         existing_data = entries[element_path]
-        data = "%s---------\nPassword: %s" % (existing_data, password_data(element))
+        new_data = password_data(element)
+        if (new_data == existing_data):
+            data = password_data(element, path)
+        else:
+            print "[INFO] Duplicate needs merging: %s" % element_path
+            data = "%s---------\nPassword: %s" % (existing_data, new_data)
     else:
         data = password_data(element, path)
         
